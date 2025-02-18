@@ -1,0 +1,26 @@
+Metadata-Version: 2.2
+Name: tabmini
+Version: 1.1.0
+Summary: Benchmarking and analysis of binary classifiers for tabular data
+Home-page: https://github.com/RicardoKnauer/TabMini
+Author: Ricardo Knauer, Marvin Grimm, Erik Rodner
+Author-email: marvin.grimm@htw-berlin.de
+Requires-Python: >3.10
+Requires-Dist: autoprognosis==0.1.21
+Requires-Dist: pandas==2.1.4
+Requires-Dist: pmlb==1.0.1.post3
+Requires-Dist: tabpfn==0.1.10
+Requires-Dist: scikit-learn==1.4.1.post1
+Requires-Dist: numpy==1.26.4
+Requires-Dist: autogluon==1.0.0
+Requires-Dist: hyperfast==1.0.2
+Requires-Dist: pymfe==0.4.3
+Requires-Dist: lightgbm==3.3.1
+Requires-Dist: xgboost==2.0.3
+Requires-Dist: catboost==1.2.3
+Dynamic: author
+Dynamic: author-email
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
