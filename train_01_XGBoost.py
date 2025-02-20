@@ -41,7 +41,8 @@ for dataset_name in dataset_names:
 
     le = LabelEncoder()
     y = le.fit_transform(y)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
     model_filename = f"saved_models/xgboost/{dataset_name}_xgboost.pkl"
     if os.path.exists(model_filename):

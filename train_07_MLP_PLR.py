@@ -1,4 +1,8 @@
 import os
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
 import joblib
 import numpy as np
 import pandas as pd
@@ -10,28 +14,28 @@ from mlp_plr import MLPPLR  # Thư viện MLP-PLR
 os.makedirs("saved_models/mlp", exist_ok=True)
 
 
-def train_mlp_plr(X_train, X_test, y_train, y_test, dataset_name):
-    print(f"Training MLP-PLR on {dataset_name}...")
 
-    model_filename = f"saved_models/mlp/{dataset_name}_mlpplr.pkl"
-    if os.path.exists(model_filename):
-        print(f"Loading saved model: {model_filename}")
-        mlp_plr_model = joblib.load(model_filename)
-    else:
-        mlp_plr_model = MLPPLR(input_dim=X_train.shape[1], hidden_layers=[64, 32])
-        mlp_plr_model.fit(X_train, y_train, epochs=50, batch_size=32)
-        joblib.dump(mlp_plr_model, model_filename)
 
-    y_pred = mlp_plr_model.predict(X_test)
-    y_prob = mlp_plr_model.predict_proba(X_test)[:, 1]
+class MLP_PLR(nn.Module):
+    def __init__(self, input_dim):
+        super(MLP_PLR, self).__init__()
+        self.fc1 = nn.Linear(input_dim, 128)
+        self.relu = nn.ReLU()
+        self.fc2 = nn.Linear(128, 64)
+        self.fc3 = nn.Linear(64, 1)  # Binary classification
 
-    results = {
-        "dataset": dataset_name,
-        "accuracy": accuracy_score(y_test, y_pred),
-        "precision": precision_score(y_test, y_pred),
-        "recall": recall_score(y_test, y_pred),
-        "f1_score": f1_score(y_test, y_pred),
-        "auc": roc_auc_score(y_test, y_prob),
-    }
+    def forward(self, x):
+        x = self.relu(self.fc1(x))
+        x = self.relu(self.fc2(x))
+        return torch.sigmoid(self.fc3(x))
 
-    return results
+model = MLP_PLR(input_dim=X_train.shape[1])
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+criterion = nn.BCELoss()
+
+for epoch in range(50):  # Train for 50 epochs
+    optimizer.zero_grad()
+    output = model(torch.tensor(X_train, dtype=torch.float32))
+    loss = criterion(output.squeeze(), torch.tensor(y_train, dtype=torch.float32))
+    loss.backward()
+    optimizer.step()
