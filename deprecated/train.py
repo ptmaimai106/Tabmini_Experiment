@@ -9,7 +9,7 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 from train_09_TabTransformer import train_tab_transformer
 from train_11_saint import train_saint
 
-tabmini_path = os.path.abspath("./TabMini")
+tabmini_path = os.path.abspath("../TabMini")
 sys.path.append(tabmini_path)
 import tabmini
 
@@ -20,7 +20,7 @@ print("Dataset loaded.")
 dataset_names = list(dataset_obj.keys())
 
 # Tạo thư mục lưu kết quả
-os.makedirs("results", exist_ok=True)
+os.makedirs("../results", exist_ok=True)
 
 # Danh sách kết quả cho từng model
 mlpplr_results = []

@@ -8,8 +8,8 @@ from sklearn.preprocessing import LabelEncoder
 import joblib
 
 
-os.makedirs("saved_models/xgboost", exist_ok=True)
-tabmini_path = os.path.abspath("./TabMini")
+os.makedirs("../saved_models/xgboost", exist_ok=True)
+tabmini_path = os.path.abspath("../TabMini")
 sys.path.append(tabmini_path)
 import tabmini
 
