@@ -18,8 +18,8 @@ dataset_names = list(dataset_obj.keys())
 print("Dataset loaded.")
 
 os.makedirs("saved_models/xgboost", exist_ok=True)
-os.makedirs("saved_models/lightgbm", exist_ok=True)
-os.makedirs("results/boosting", exist_ok=True)
+# os.makedirs("saved_models/lightgbm", exist_ok=True)
+os.makedirs("results/xgboost", exist_ok=True)
 
 
 model_configs = {
@@ -41,17 +41,6 @@ model_configs = {
         },
         "save_path": "saved_models/xgboost/{dataset}_xgboost.pkl"
     },
-    "lightgbm": {
-        "model_class": lgb.LGBMClassifier,
-        "params": {
-            'n_estimators': [50, 100, 200],
-            'max_depth':  [-1, 6, 12, 20], # [-1, 6, 9], max_depth=-1 cho phép cây phát triển tự do mà không bị giới hạn
-            'learning_rate': [0.01, 0.1, 0.2],
-            'min_gain_to_split': [0.0, 0.1, 0.2],
-            'min_data_in_leaf': [1, 10, 20]
-        },
-        "save_path": "saved_models/lightgbm/{dataset}_lightgbm.pkl"
-    }
 }
 
 results = []
@@ -108,5 +97,5 @@ for dataset_name in dataset_names:
 
 # Lưu kết quả để so sánh
 results_df = pd.DataFrame(results)
-results_df.to_csv("results/boosting/tabmini_model_comparison.csv", index=False)
+results_df.to_csv("results/xgboost/tabmini_model_comparison.csv", index=False)
 print("\n✅ Finished evaluation. Results saved to tabmini_model_comparison.csv")

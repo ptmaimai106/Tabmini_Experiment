@@ -17,30 +17,12 @@ dataset_obj = tabmini.load_dataset(reduced=False)
 dataset_names = list(dataset_obj.keys())
 print("Dataset loaded.")
 
-os.makedirs("saved_models/xgboost", exist_ok=True)
+# os.makedirs("saved_models/xgboost", exist_ok=True)
 os.makedirs("saved_models/lightgbm", exist_ok=True)
-os.makedirs("results/boosting", exist_ok=True)
+os.makedirs("results/lightgbm", exist_ok=True)
 
 
 model_configs = {
-    "xgboost": {
-        "model_class": xgb.XGBClassifier,
-        # "params": {
-        #     'n_estimators': [50, 100, 200],
-        #     'max_depth': [3, 6, 9],
-        #     'learning_rate': [0.01, 0.1, 0.2]
-        # },
-        "params": {
-            'n_estimators': [100, 200, 500],  # Thử giá trị cao hơn để xem overfitting có xảy ra không
-            'max_depth': [4, 6, 8],  # Giới hạn độ sâu để tránh overfitting
-            'learning_rate': [0.01, 0.05, 0.1],  # Dùng bước nhảy nhỏ hơn để cải thiện tổng thể
-            'subsample': [0.6, 0.8, 1.0],  # Điều chỉnh tỷ lệ mẫu để tránh overfitting
-            'colsample_bytree': [0.6, 0.8, 1.0],  # Giảm số lượng đặc trưng sử dụng trong mỗi cây
-            'gamma': [0, 0.1, 0.2, 0.5],  # Điều chỉnh mức độ pruning, tránh overfitting
-            'min_child_weight': [1, 3, 5]  # Để tránh overfitting khi dữ liệu ít
-        },
-        "save_path": "saved_models/xgboost/{dataset}_xgboost.pkl"
-    },
     "lightgbm": {
         "model_class": lgb.LGBMClassifier,
         "params": {
@@ -108,5 +90,5 @@ for dataset_name in dataset_names:
 
 # Lưu kết quả để so sánh
 results_df = pd.DataFrame(results)
-results_df.to_csv("results/boosting/tabmini_model_comparison.csv", index=False)
+results_df.to_csv("results/lightgbm/tabmini_model_comparison.csv", index=False)
 print("\n✅ Finished evaluation. Results saved to tabmini_model_comparison.csv")
