@@ -1,6 +1,4 @@
 import os
-import sys
-import xgboost as xgb
 import lightgbm as lgb
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
 from sklearn.model_selection import train_test_split, GridSearchCV
@@ -8,18 +6,40 @@ from sklearn.preprocessing import LabelEncoder
 import pandas as pd
 import joblib
 
-tabmini_path = os.path.abspath("./TabMini")
-sys.path.append(tabmini_path)
-import tabmini
 
-print("Loading TabMini dataset...")
-dataset_obj = tabmini.load_dataset(reduced=False)
+def load_tsv_datasets(folder_path):
+    """Đọc tất cả các tệp .tsv trong thư mục đã giải nén và trả về datasets"""
+    datasets = {}
+    for file in os.listdir(folder_path):
+        if file.endswith(".tsv"):
+            dataset_name = os.path.splitext(file)[0]
+            file_path = os.path.join(folder_path, file)
+            df = pd.read_csv(file_path, sep="\t")
+
+            if df.shape[1] < 2:
+                print(f"⚠️ Bỏ qua {file}, số cột không đủ!")
+                continue
+
+            X = df.iloc[:, :-1]  # Các cột đầu là features
+            y = df.iloc[:, -1]  # Cột cuối là label
+            datasets[dataset_name] = (X, y)
+    return datasets
+
+
+print("Loading datasets from extracted TSV files...")
+dataset_folder = "datasets_decompressed"  # Đặt thư mục chứa file .tsv
+os.makedirs(dataset_folder, exist_ok=True)
+dataset_obj = load_tsv_datasets(dataset_folder)
 dataset_names = list(dataset_obj.keys())
-print("Dataset loaded.")
+print("Datasets loaded.")
 
-# os.makedirs("saved_models/xgboost", exist_ok=True)
-os.makedirs("saved_models/lightgbm", exist_ok=True)
-os.makedirs("results/lightgbm", exist_ok=True)
+
+OUTPUT_MODEL_PATH = "saved_models/lightgbm"
+RESULT_PATH = "results/lightgbm"
+
+
+os.makedirs(OUTPUT_MODEL_PATH, exist_ok=True)
+os.makedirs(RESULT_PATH, exist_ok=True)
 
 
 model_configs = {
@@ -32,7 +52,7 @@ model_configs = {
             'min_gain_to_split': [0.0, 0.1, 0.2],
             'min_data_in_leaf': [1, 10, 20]
         },
-        "save_path": "saved_models/lightgbm/{dataset}_lightgbm.pkl"
+        "save_path": "saved_models/lightgbm_new/{dataset}_lightgbm.pkl"
     }
 }
 
@@ -90,5 +110,5 @@ for dataset_name in dataset_names:
 
 # Lưu kết quả để so sánh
 results_df = pd.DataFrame(results)
-results_df.to_csv("results/lightgbm/tabmini_model_comparison.csv", index=False)
-print("\n✅ Finished evaluation. Results saved to tabmini_model_comparison.csv")
+results_df.to_csv("results/lightgbm/result.csv", index=False)
+print("\n✅ Finished evaluation. Results saved to result.csv")

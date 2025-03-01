@@ -1,5 +1,4 @@
 import os
-import sys
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -10,16 +9,29 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 import pandas as pd
 import numpy as np
 
-# Load TabMini dataset
-tabmini_path = os.path.abspath("./TabMini")
-sys.path.append(tabmini_path)
-import tabmini
+def load_tsv_datasets(folder_path):
+    """Đọc tất cả các tệp .tsv trong thư mục đã giải nén và trả về datasets"""
+    datasets = {}
+    for file in os.listdir(folder_path):
+        if file.endswith(".tsv"):
+            dataset_name = os.path.splitext(file)[0]
+            file_path = os.path.join(folder_path, file)
+            df = pd.read_csv(file_path, sep="\t")
+
+            if df.shape[1] < 2:
+                print(f"⚠️ Bỏ qua {file}, số cột không đủ!")
+                continue
+
+            X = df.iloc[:, :-1]  # Các cột đầu là features
+            y = df.iloc[:, -1]  # Cột cuối là label
+            datasets[dataset_name] = (X, y)
+    return datasets
 
 os.makedirs("saved_models/TabTransformer", exist_ok=True)
 os.makedirs("results/TabTransformer", exist_ok=True)
 
 MODEL_SAVE_PATH = "saved_models/TabTransformer"
-RESULTS_CSV = "results/TabTransformer/tabmini_model_comparison.csv"
+RESULTS_CSV = "results/TabTransformer/results.csv"
 
 # ===================== TabTransformer Model ===================== #
 class TabTransformer(nn.Module):
@@ -77,7 +89,13 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, model_pat
             print(f"✅ Saved best model: {model_path}")
 
 # ===================== Load Data ===================== #
-dataset_obj = tabmini.load_dataset(reduced=False)
+print("Loading datasets from extracted TSV files...")
+dataset_folder = "datasets_decompressed"  # Đặt thư mục chứa file .tsv
+os.makedirs(dataset_folder, exist_ok=True)
+dataset_obj = load_tsv_datasets(dataset_folder)
+dataset_names = list(dataset_obj.keys())
+print("Datasets loaded.")
+
 results = []
 
 for dataset_name, (X, y) in dataset_obj.items():
@@ -121,4 +139,4 @@ for dataset_name, (X, y) in dataset_obj.items():
 # Save final results to CSV
 results_df = pd.DataFrame(results)
 results_df.to_csv(RESULTS_CSV, index=False)
-print("\n✅ Finished evaluation. Results saved to tabmini_model_comparison.csv")
+print("\n✅ Finished evaluation. Results saved to results.csv")
