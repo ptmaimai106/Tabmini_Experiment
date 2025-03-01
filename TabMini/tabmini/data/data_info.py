@@ -7,18 +7,28 @@ files = [
     ["analcatdata_boxing1", "analcatdata_boxing2", "appendicitis", "backache", "corral", "glass2",
      "hepatitis", "molecular_biology_promoters", "mux6", "prnn_crabs"],
     # M = 201 - 300 (9 datasets)
-    ["analcatdata_lawsuit", "biomed", "breast_cancer", "heart_h", "heart_statlog", "hungarian", "prnn_synth",
+    ["analcatdata_lawsuit", "biomed", "breast_cancer" , "prnn_synth",
      "sonar", "spect"],
+    # Mai: remove
     # M = 301 - 400 (8 datasets)
-    ["bupa", "cleve", "colic", "haberman", "heart_c", "horse_colic", "ionosphere", "spectf"],
+    ["bupa",   "haberman", "ionosphere", "spectf"],
     # M = 401 - 500 (5 datasets)
-    ["clean1", "house_votes_84", "irish", "saheart", "vote"]
+    ["clean1", "irish", "saheart" ]
 ]
 
 # Taken from table 8 of the tabPFN paper...
 
 _excluded_1 = [
-    "breast-cancer",
+"cleve",
+"horse_colic",
+"vote",
+"heart_c",
+"house_votes_84",
+"colic",
+"heart_h",
+"heart_statlog",
+"hungarian"
+"breast-cancer",
     # "colic", # We don't exclude colic as n_features is not consistent with the paper
     "dermatology",
     "sonar",
